@@ -7,11 +7,12 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class dbTest {
+public class DbTest {
     Connection dbConnection;
 
     @Before
@@ -27,8 +28,9 @@ public class dbTest {
     }
 
     @Test
-    public void testCanInsertIntoTable() throws SQLException {
+    public void testUpdateDeleteTableValues() throws SQLException {
         DbUtils utils = new DbUtils(dbConnection);
+
         assertTrue("The table should be written to.",
                 utils.insertInto(DbConfig.tableName,
                         new String[]{"'tArtist'", "'tTitle'", "'tTrack'", "'tReleased'", "'tGenre'"}));
@@ -36,5 +38,15 @@ public class dbTest {
         assertTrue("The table should be written to.",
                 utils.insertInto(DbConfig.tableName,
                         new String[]{"'tArtist2'", "'tTitle2'", "'tTrack2'", "'tReleased2'", "'tGenre2'"}));
+
+        HashMap<String, String> deleteWhereHashMap = new HashMap<>();
+        deleteWhereHashMap.put(DbConfig.artistColumnName, "tArtist");
+        assertTrue("The inserted values should be deleted.",
+                utils.deleteFrom(DbConfig.tableName, deleteWhereHashMap));
+
+        deleteWhereHashMap.clear();
+        deleteWhereHashMap.put(DbConfig.artistColumnName, "tArtist2");
+        assertTrue("The inserted values should be deleted.",
+                utils.deleteFrom(DbConfig.tableName, deleteWhereHashMap));
     }
 }
